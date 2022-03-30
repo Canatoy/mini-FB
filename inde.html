@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook</title>
+</head>
+<body>
+    <h1>Facebook</h1>
+    <form action="#">
+        <input id="body" placeholder="Enter body" type="text">
+        <button onclick="createAPost()">Submit</button>
+    </form>
+    <ul>
+    </ul>
+   <script> 
+   const url = 'http://localhost:3001'
+
+    //READ ALL POSTS
+    //READ ALL POSTS
+    async function showAllPosts(){
+    const response =  await fetch(url+'/todos')
+    const posts = await response.json()
+    const ul = document.querySelector('ul')
+    posts.map((todo)=>{
+     //post.id
+     //post.title
+     //post.body
+     const li = document.createElement('li')
+     
+     // CREATE A DELETE BUTTON
+     const deleteButton = document.createElement('button');
+     deleteButton.onclick = async function(){
+            await fetch(url+'/todos/'+todo.id,{
+                method:'DELETE'
+            })
+        }
+        deleteButton.appendChild(document.createTextNode('DELETE'))
+        li.appendChild(document.createTextNode(todo.body))
+        li.appendChild(deleteButton)
+        ul.appendChild(li)
+    
+    //CREATE UPDATE BUTTON
+    const updateButton = document.createElement('button');
+    updateButton.onclick = async function(){
+    const body = document.querySelector('#body').value
+        
+           await fetch(url+'/todos/'+ todo.id,{
+            method:'PUT', 
+            body:JSON.stringify({
+                body
+            }),
+               headers: {
+                           'Content-type': 'application/json; charset=UTF-8',
+                        }
+               
+           })
+        
+       }
+       updateButton.appendChild(document.createTextNode('UPDATE'))
+       li.appendChild(updateButton)
+       ul.appendChild(li)
+     })
+    }
+    
+    // CREATE A POST
+    async function createAPost(){
+        
+        const body = document.querySelector('#body').value
+        const response = await fetch(url+'/todos',{
+            method:'POST',
+            body:JSON.stringify({
+                body
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        })
+        const post = await response.json()
+    
+        
+    }
+    showAllPosts()</script>
+</body>
+</html>
